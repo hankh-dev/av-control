@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>자율주행 관제</title>
+  <link rel="stylesheet" href="/static/vendor/leaflet.css">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1>자율주행 관제</h1>
+    <div class="clock">
+      <span class="label">시뮬레이션 시각</span>
+      <span id="clock">--:--</span>
+    </div>
+    <div class="stats">
+      <span><b id="stat-online">0</b>운행 중</span>
+      <span class="held"><b id="stat-held">0</b>관제 정지</span>
+      <span class="lost"><b id="stat-lost">0</b>연결 끊김</span>
+      <span class="alerting"><b id="stat-alerts">0</b>처리할 알림</span>
+    </div>
+    <div id="link" class="link down">연결 중…</div>
+  </header>
+
+  <main>
+    <div id="map" aria-label="관제 지도"></div>
+
+    <aside>
+      <section id="vehicle-panel" class="panel vehicle" hidden>
+        <div class="vehicle-head">
+          <h2 id="v-id"></h2>
+          <span id="v-state" class="chip"></span>
+          <button id="v-close" class="icon" title="선택 해제 (Esc)" aria-label="선택 해제">×</button>
+        </div>
+        <dl class="metrics">
+          <div><dt>속도</dt><dd id="v-speed">-</dd></div>
+          <div><dt>가속도</dt><dd id="v-accel">-</dd></div>
+          <div><dt>지금 도로</dt><dd id="v-road">-</dd></div>
+          <div><dt>목적지</dt><dd id="v-dest">-</dd></div>
+        </dl>
+        <div class="controls">
+          <div class="row">
+            <button id="c-stop" class="danger">정지</button>
+            <button id="c-resume">재출발</button>
+          </div>
+          <div class="row">
+            <input id="c-limit" type="number" min="5" max="200" step="5" value="20" aria-label="제한 속도 (km/h)">
+            <span class="unit">km/h</span>
+            <button id="c-limit-set">속도 제한</button>
+            <button id="c-limit-clear" class="ghost">제한 해제</button>
+          </div>
+          <div class="row">
+            <button id="c-reroute">목적지 변경</button>
+            <span id="c-hint" class="hint"></span>
+          </div>
+        </div>
+        <!-- 알림 줄이 생기고 없어져도 명령 버튼이 움직이지 않도록 버튼 아래에 둔다 -->
+        <ul id="v-alerts" class="vehicle-alerts"></ul>
+      </section>
+
+      <section class="panel">
+        <h2>알림 <span id="alert-count" class="count"></span></h2>
+        <p id="alerts-paused" class="paused" hidden>바뀐 알림이 있습니다. 마우스를 목록 밖으로 옮기면 반영됩니다.</p>
+        <ul id="alerts" class="alerts"></ul>
+        <p id="alerts-empty" class="empty">처리할 알림이 없습니다.</p>
+      </section>
+
+      <section class="panel">
+        <h2>차량 <span id="fleet-count" class="muted-count"></span></h2>
+        <div id="fleet" class="fleet"></div>
+      </section>
+
+      <section class="panel">
+        <h2>명령 기록</h2>
+        <ul id="commands" class="commands"></ul>
+        <p id="commands-empty" class="empty">보낸 명령이 없습니다.</p>
+      </section>
+    </aside>
+  </main>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+
+  <script src="/static/vendor/leaflet.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>

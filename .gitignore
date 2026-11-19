@@ -1,0 +1,11 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+
+# 실행하면서 생기는 파일 (DB, 로그, 시뮬레이션 출력)
+data/
+
+# Claude Code 개인 설정
+.claude/settings.local.json

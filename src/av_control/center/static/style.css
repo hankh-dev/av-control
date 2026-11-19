@@ -1,0 +1,175 @@
+:root {
+  --bg: #0d1117;
+  --panel: #161b22;
+  --panel-2: #1c232d;
+  --border: #2a3441;
+  --text: #e6edf3;
+  --muted: #8b98a5;
+  --accent: #4c9aff;
+  --ok: #3fb950;
+  --warn: #d29922;
+  --danger: #f85149;
+  --lost: #6e7681;
+  --map-bg: #0a0e13;
+  --road: #3b4757;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.45 -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+}
+
+/* 상단 막대 */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 10px 16px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+}
+.topbar h1 { margin: 0; font-size: 16px; font-weight: 700; }
+.clock { display: flex; flex-direction: column; line-height: 1.2; }
+.clock .label { font-size: 11px; color: var(--muted); }
+#clock { font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.stats { display: flex; gap: 18px; color: var(--muted); }
+.stats b { margin-right: 5px; font-size: 16px; color: var(--text); font-variant-numeric: tabular-nums; }
+.stats .held b { color: var(--warn); }
+.stats .lost b { color: var(--lost); }
+.stats .alerting b { color: var(--danger); }
+.link { margin-left: auto; padding: 3px 10px; border: 1px solid var(--border); border-radius: 999px; font-size: 12px; }
+.link.up { color: var(--ok); }
+.link.down { color: var(--warn); }
+
+/* 본문: 지도 + 옆 패널 */
+main { display: grid; grid-template-columns: minmax(0, 1fr) 390px; min-height: 0; }
+#map { height: 100%; background: var(--map-bg); }
+#map.picking, #map.picking .leaflet-interactive { cursor: crosshair; }
+aside { overflow-y: auto; background: var(--bg); border-left: 1px solid var(--border); }
+.panel { padding: 14px 16px; border-bottom: 1px solid var(--border); }
+.panel h2 { display: flex; align-items: center; gap: 8px; margin: 0 0 10px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.count { padding: 0 7px; border-radius: 999px; background: var(--danger); color: #fff; font-size: 12px; }
+.count:empty, .muted-count:empty { display: none; }
+.muted-count { font-weight: 400; }
+.empty { margin: 0; color: var(--muted); }
+.paused { margin: 0 0 8px; padding: 5px 8px; font-size: 12px; color: var(--accent); background: rgba(76, 154, 255, 0.1); border-radius: 6px; }
+
+/* 공통 요소 */
+button {
+  padding: 5px 10px;
+  font: inherit;
+  font-size: 13px;
+  color: var(--text);
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+}
+button:hover { border-color: var(--accent); }
+button.danger { color: #ffb3ad; background: rgba(248, 81, 73, 0.15); border-color: rgba(248, 81, 73, 0.5); }
+button.ghost { background: transparent; }
+button.active { color: #fff; background: var(--accent); border-color: var(--accent); }
+button.icon { margin-left: auto; padding: 0 4px; font-size: 20px; line-height: 1; color: var(--muted); background: none; border: none; }
+input[type="number"] {
+  width: 72px;
+  padding: 5px 8px;
+  font: inherit;
+  color: var(--text);
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.chip { padding: 1px 8px; font-size: 11px; color: var(--muted); border: 1px solid var(--border); border-radius: 999px; white-space: nowrap; }
+.chip.ok { color: var(--ok); border-color: rgba(63, 185, 80, 0.4); }
+.chip.open, .chip.alerting, .chip.fail { color: var(--danger); border-color: rgba(248, 81, 73, 0.45); }
+.chip.acknowledged, .chip.held { color: var(--warn); border-color: rgba(210, 153, 34, 0.45); }
+.chip.cleared { color: var(--ok); border-color: rgba(63, 185, 80, 0.4); }
+.chip.lost, .chip.pending { color: var(--muted); }
+
+/* 선택한 차량 */
+.vehicle-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.vehicle-head h2 { margin: 0; font-size: 20px; color: var(--text); font-variant-numeric: tabular-nums; }
+.metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0 0 10px; }
+.metrics div { padding: 6px 9px; background: var(--panel); border: 1px solid var(--border); border-radius: 6px; }
+.metrics dt { font-size: 11px; color: var(--muted); }
+.metrics dd { margin: 0; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.vehicle-alerts { display: flex; flex-direction: column; gap: 4px; margin: 10px 0 0; padding: 0; list-style: none; font-size: 13px; color: #ffb3ad; }
+.vehicle-alerts:empty { display: none; }
+.controls { display: flex; flex-direction: column; gap: 8px; }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.unit { font-size: 12px; color: var(--muted); }
+.hint { font-size: 12px; color: var(--accent); }
+
+/* 알림 */
+.alerts { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.alert { padding: 8px 10px; background: var(--panel); border: 1px solid var(--border); border-left: 3px solid var(--danger); border-radius: 6px; cursor: pointer; }
+.alert:hover { border-color: var(--accent); }
+.alert.acknowledged { border-left-color: var(--warn); }
+.alert-top { display: flex; align-items: center; gap: 8px; }
+.alert-top time { margin-left: auto; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.badge { padding: 1px 6px; font-size: 12px; font-weight: 600; color: var(--danger); background: rgba(248, 81, 73, 0.15); border-radius: 4px; }
+.type-congestion .badge { color: var(--warn); background: rgba(210, 153, 34, 0.15); }
+.type-report_lost .badge { color: #c9d1d9; background: rgba(110, 118, 129, 0.3); }
+.subject { font-weight: 600; font-variant-numeric: tabular-nums; }
+.detail { margin: 2px 0 6px; font-size: 13px; color: var(--muted); }
+.alert-bottom { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.actions { display: flex; gap: 6px; margin-left: auto; }
+.actions button { padding: 3px 9px; font-size: 12px; }
+
+/* 차량 목록 */
+.fleet { display: flex; flex-wrap: wrap; gap: 6px; }
+.vchip { padding: 3px 8px; font-size: 12px; font-variant-numeric: tabular-nums; border-left: 3px solid var(--accent); }
+.vchip.held { border-left-color: var(--warn); }
+.vchip.alerting { border-left-color: var(--danger); }
+.vchip.lost { color: var(--muted); border-left-color: var(--lost); }
+.vchip.selected { background: rgba(76, 154, 255, 0.18); border-color: var(--accent); }
+
+/* 명령 기록 */
+.commands { display: flex; flex-direction: column; gap: 5px; margin: 0; padding: 0; list-style: none; font-size: 13px; }
+.commands li { display: grid; grid-template-columns: 52px 46px minmax(0, 1fr) auto; align-items: center; gap: 6px; }
+.commands time { color: var(--muted); font-variant-numeric: tabular-nums; }
+.commands .reason { grid-column: 3 / -1; font-size: 12px; color: var(--danger); overflow-wrap: anywhere; }
+
+.toast {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  z-index: 1000;
+  padding: 8px 14px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+  transform: translateX(-50%);
+}
+
+/* 지도 위 차량 */
+.vehicle-marker { transition: transform 0.3s linear; }
+#map.zooming .vehicle-marker { transition: none; }
+.vehicle-marker svg { display: block; width: 24px; height: 24px; overflow: visible; }
+.vehicle-marker path { fill: var(--accent); stroke: var(--map-bg); stroke-width: 1.5; }
+.vehicle-marker.held path { fill: var(--warn); }
+.vehicle-marker.alerting path { fill: var(--danger); }
+.vehicle-marker.alerting svg { animation: pulse 0.9s ease-in-out infinite alternate; }
+.vehicle-marker.lost path { fill: var(--lost); }
+.vehicle-marker.lost svg { animation: none; }
+.vehicle-marker.selected path { stroke: #fff; stroke-width: 2; }
+@keyframes pulse { to { filter: drop-shadow(0 0 6px var(--danger)); } }
+
+/* Leaflet 기본 모양을 어두운 테마에 맞춘다 */
+.leaflet-container { font: inherit; background: var(--map-bg); }
+.leaflet-bar a { color: var(--text); background: var(--panel-2); border-bottom-color: var(--border); }
+.leaflet-bar a:hover { background: var(--panel); }
+.leaflet-tooltip { color: var(--text); background: var(--panel-2); border: 1px solid var(--border); box-shadow: none; }
+.leaflet-tooltip-top::before { border-top-color: var(--border); }
+
+@media (max-width: 900px) {
+  main { grid-template-columns: 1fr; grid-template-rows: 55vh auto; }
+  aside { border-top: 1px solid var(--border); border-left: none; }
+  .topbar { flex-wrap: wrap; gap: 12px 20px; }
+}

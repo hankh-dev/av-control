@@ -1,0 +1,34 @@
+[project]
+name = "av-control"
+version = "0.1.0"
+description = "SUMO로 돌리는 자율주행 차량들을 지켜보고, 이상을 감지하고, 원격 명령을 보내는 관제 시스템"
+readme = "README.md"
+authors = [
+    { name = "hankh", email = "hankh.dev@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "eclipse-sumo>=1.28.0",
+    "fastapi>=0.165.0",
+    "paho-mqtt>=2.2.0",
+    "pydantic>=2.14.3",
+    "traci>=1.28.0",
+    "uvicorn[standard]>=0.54.0",
+]
+
+[project.scripts]
+av-bridge = "av_control.bridge.cli:main"
+av-center = "av_control.center.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.13.9,<0.14.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "httpx2>=2.16.2",
+    "pytest>=9.2.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
